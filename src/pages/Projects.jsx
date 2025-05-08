@@ -4,60 +4,115 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ProjectCard from '../Components/ProjectCard';
 
 const ProjectsSection = styled.section`
-  padding: 5rem 0;
+  padding: 8rem 0;
+  position: relative;
+  overflow: hidden;
   
   @media (max-width: 768px) {
-    padding: 3rem 0;
+    padding: 6rem 0;
+  }
+`;
+
+const ProjectsBg = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+  }
+  
+  .blob-1 {
+    bottom: 5%;
+    right: -5%;
+    width: 500px;
+    height: 500px;
+    background: ${({ theme }) => theme.primary};
+    opacity: 0.08;
+  }
+  
+  .blob-2 {
+    top: 20%;
+    left: -10%;
+    width: 400px;
+    height: 400px;
+    background: ${({ theme }) => theme.secondary};
+    opacity: 0.08;
   }
 `;
 
 const ProjectsContainer = styled.div`
   width: 100%;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 2.5rem;
   
   @media (max-width: 768px) {
-    padding: 0 1rem;
+    padding: 0 1.5rem;
   }
 `;
 
 const SectionTitle = styled(motion.h2)`
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
   text-align: center;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  
+  span {
+    background: ${({ theme }) => theme.primaryGradient};
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 `;
 
 const SectionSubtitle = styled(motion.p)`
   color: ${({ theme }) => theme.textLight};
   text-align: center;
   max-width: 700px;
-  margin: 0 auto 3rem auto;
-  font-size: 1.1rem;
+  margin: 0 auto 4rem auto;
+  font-size: 1.15rem;
+  line-height: 1.8;
 `;
 
 const FilterContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 3rem;
-  gap: 0.5rem;
+  margin-bottom: 4rem;
+  gap: 1rem;
 `;
 
 const FilterButton = styled(motion.button)`
-  padding: 0.5rem 1.2rem;
-  background: ${({ active, theme }) => active ? theme.primary : 'transparent'};
+  padding: 0.8rem 1.8rem;
+  background: ${({ active, theme }) => active ? theme.primaryGradient : 'transparent'};
   color: ${({ active, theme }) => active ? '#fff' : theme.text};
-  border: 2px solid ${({ active, theme }) => active ? theme.primary : theme.border};
-  border-radius: 30px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  border: 2px solid ${({ active, theme }) => active ? 'transparent' : theme.border};
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: ${({ active, theme }) => active ? '0 10px 20px rgba(0, 0, 0, 0.1)' : 'none'};
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
   
   &:hover {
-    border-color: ${({ theme }) => theme.primary};
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     color: ${({ active, theme }) => active ? '#fff' : theme.primary};
+    border-color: ${({ active, theme }) => active ? 'transparent' : theme.primary};
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -195,34 +250,45 @@ const Projects = () => {
   
   return (
     <ProjectsSection id="projects">
+      <ProjectsBg>
+        <div className="blob blob-1"></div>
+        <div className="blob blob-2"></div>
+      </ProjectsBg>
+      
       <ProjectsContainer>
         <SectionTitle
-          as={motion.h2}
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
         >
-          Mes projets
+          Mes <span>Projets</span>
         </SectionTitle>
         
         <SectionSubtitle
-          as={motion.p}
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1 }}
         >
           Découvrez une sélection de mes projets les plus récents et significatifs qui démontrent
           mes compétences techniques et ma passion pour la création d'applications web performantes.
         </SectionSubtitle>
         
-        <FilterContainer>
-          {filters.map(filter => (
+        <FilterContainer
+          as={motion.div}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          {filters.map((filter, index) => (
             <FilterButton
               key={filter.id}
               active={activeFilter === filter.id}
               onClick={() => setActiveFilter(filter.id)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 * index }}
             >
               {filter.name}
             </FilterButton>
@@ -231,22 +297,28 @@ const Projects = () => {
         
         <AnimatePresence mode="wait">
           <ProjectsGrid
-            as={motion.div}
             key={activeFilter}
-            variants={container}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
           >
             {filteredProjects.length > 0 ? (
-              filteredProjects.map(project => (
-                <ProjectCard key={project.id} project={project} />
+              filteredProjects.map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 * index }}
+                >
+                  <ProjectCard project={project} />
+                </motion.div>
               ))
             ) : (
               <EmptyState
-                as={motion.div}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
               >
                 <h3>Aucun projet trouvé</h3>
                 <p>Aucun projet ne correspond au filtre sélectionné.</p>

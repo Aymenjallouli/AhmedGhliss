@@ -157,7 +157,6 @@ const Footer = () => {
           <FooterTitle>Navigation</FooterTitle>
           <FooterLinks>
             <li><FooterLink href="/">Accueil</FooterLink></li>
-            <li><FooterLink href="/about">À propos</FooterLink></li>
             <li><FooterLink href="/projects">Projets</FooterLink></li>
             <li><FooterLink href="/contact">Contact</FooterLink></li>
             <li><FooterLink href="/blog">Blog</FooterLink></li>
